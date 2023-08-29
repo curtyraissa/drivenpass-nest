@@ -18,9 +18,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:load-envs": "dotenv -e .env.test",
-    "test:prisma": "npm run test:load-envs prisma migrate deploy",
-    "test:e2e": "npm run test;load-envs -- jest -- --runInBand --config ./test/jest-e2e.json"
-  },
+  "test:prisma": "npm run test:load-envs prisma migrate deploy",
+  "test:e2e": "npm run test:load-envs -- jest -- --runInBand --config ./test/jest-e2e.json"
+},
   "dependencies": {
     "@faker-js/faker": "^8.0.2",
     "@nestjs/common": "^10.0.0",

@@ -1106,15 +1106,15 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
+    cards: number
     credentials: number
     notes: number
-    cards: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    cards?: boolean | UserCountOutputTypeCountCardsArgs
     credentials?: boolean | UserCountOutputTypeCountCredentialsArgs
     notes?: boolean | UserCountOutputTypeCountNotesArgs
-    cards?: boolean | UserCountOutputTypeCountCardsArgs
   }
 
   // Custom InputTypes
@@ -1133,6 +1133,14 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
+  export type UserCountOutputTypeCountCardsArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    where?: CardWhereInput
+  }
+
+
+  /**
+   * UserCountOutputType without action
+   */
   export type UserCountOutputTypeCountCredentialsArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     where?: CredentialWhereInput
   }
@@ -1143,14 +1151,6 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountNotesArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     where?: NoteWhereInput
-  }
-
-
-  /**
-   * UserCountOutputType without action
-   */
-  export type UserCountOutputTypeCountCardsArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
-    where?: CardWhereInput
   }
 
 
@@ -1341,9 +1341,9 @@ export namespace Prisma {
     id?: boolean
     email?: boolean
     password?: boolean
+    cards?: boolean | User$cardsArgs<ExtArgs>
     credentials?: boolean | User$credentialsArgs<ExtArgs>
     notes?: boolean | User$notesArgs<ExtArgs>
-    cards?: boolean | User$cardsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1354,9 +1354,9 @@ export namespace Prisma {
   }
 
   export type UserInclude<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    cards?: boolean | User$cardsArgs<ExtArgs>
     credentials?: boolean | User$credentialsArgs<ExtArgs>
     notes?: boolean | User$notesArgs<ExtArgs>
-    cards?: boolean | User$cardsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -1364,9 +1364,9 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
+      cards: Prisma.$CardPayload<ExtArgs>[]
       credentials: Prisma.$CredentialPayload<ExtArgs>[]
       notes: Prisma.$NotePayload<ExtArgs>[]
-      cards: Prisma.$CardPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetResult<{
       id: number
@@ -1737,11 +1737,11 @@ export namespace Prisma {
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: 'PrismaPromise';
 
+    cards<T extends User$cardsArgs<ExtArgs> = {}>(args?: Subset<T, User$cardsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CardPayload<ExtArgs>, T, 'findMany'> | Null>;
+
     credentials<T extends User$credentialsArgs<ExtArgs> = {}>(args?: Subset<T, User$credentialsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CredentialPayload<ExtArgs>, T, 'findMany'> | Null>;
 
     notes<T extends User$notesArgs<ExtArgs> = {}>(args?: Subset<T, User$notesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, 'findMany'> | Null>;
-
-    cards<T extends User$cardsArgs<ExtArgs> = {}>(args?: Subset<T, User$cardsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CardPayload<ExtArgs>, T, 'findMany'> | Null>;
 
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2086,6 +2086,27 @@ export namespace Prisma {
 
 
   /**
+   * User.cards
+   */
+  export type User$cardsArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Card
+     */
+    select?: CardSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: CardInclude<ExtArgs> | null
+    where?: CardWhereInput
+    orderBy?: CardOrderByWithRelationInput | CardOrderByWithRelationInput[]
+    cursor?: CardWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CardScalarFieldEnum | CardScalarFieldEnum[]
+  }
+
+
+  /**
    * User.credentials
    */
   export type User$credentialsArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
@@ -2124,27 +2145,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: NoteScalarFieldEnum | NoteScalarFieldEnum[]
-  }
-
-
-  /**
-   * User.cards
-   */
-  export type User$cardsArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Card
-     */
-    select?: CardSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     */
-    include?: CardInclude<ExtArgs> | null
-    where?: CardWhereInput
-    orderBy?: CardOrderByWithRelationInput | CardOrderByWithRelationInput[]
-    cursor?: CardWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: CardScalarFieldEnum | CardScalarFieldEnum[]
   }
 
 
@@ -5216,18 +5216,18 @@ export namespace Prisma {
     id?: IntFilter<"User"> | number
     email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
+    cards?: CardListRelationFilter
     credentials?: CredentialListRelationFilter
     notes?: NoteListRelationFilter
-    cards?: CardListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    cards?: CardOrderByRelationAggregateInput
     credentials?: CredentialOrderByRelationAggregateInput
     notes?: NoteOrderByRelationAggregateInput
-    cards?: CardOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -5237,9 +5237,9 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     password?: StringFilter<"User"> | string
+    cards?: CardListRelationFilter
     credentials?: CredentialListRelationFilter
     notes?: NoteListRelationFilter
-    cards?: CardListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -5456,35 +5456,35 @@ export namespace Prisma {
   export type UserCreateInput = {
     email: string
     password: string
+    cards?: CardCreateNestedManyWithoutUserInput
     credentials?: CredentialCreateNestedManyWithoutUserInput
     notes?: NoteCreateNestedManyWithoutUserInput
-    cards?: CardCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
     id?: number
     email: string
     password: string
+    cards?: CardUncheckedCreateNestedManyWithoutUserInput
     credentials?: CredentialUncheckedCreateNestedManyWithoutUserInput
     notes?: NoteUncheckedCreateNestedManyWithoutUserInput
-    cards?: CardUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    cards?: CardUpdateManyWithoutUserNestedInput
     credentials?: CredentialUpdateManyWithoutUserNestedInput
     notes?: NoteUpdateManyWithoutUserNestedInput
-    cards?: CardUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    cards?: CardUncheckedUpdateManyWithoutUserNestedInput
     credentials?: CredentialUncheckedUpdateManyWithoutUserNestedInput
     notes?: NoteUncheckedUpdateManyWithoutUserNestedInput
-    cards?: CardUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -5714,6 +5714,12 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type CardListRelationFilter = {
+    every?: CardWhereInput
+    some?: CardWhereInput
+    none?: CardWhereInput
+  }
+
   export type CredentialListRelationFilter = {
     every?: CredentialWhereInput
     some?: CredentialWhereInput
@@ -5726,10 +5732,8 @@ export namespace Prisma {
     none?: NoteWhereInput
   }
 
-  export type CardListRelationFilter = {
-    every?: CardWhereInput
-    some?: CardWhereInput
-    none?: CardWhereInput
+  export type CardOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type CredentialOrderByRelationAggregateInput = {
@@ -5737,10 +5741,6 @@ export namespace Prisma {
   }
 
   export type NoteOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type CardOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -5936,6 +5936,13 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type CardCreateNestedManyWithoutUserInput = {
+    create?: XOR<CardCreateWithoutUserInput, CardUncheckedCreateWithoutUserInput> | CardCreateWithoutUserInput[] | CardUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CardCreateOrConnectWithoutUserInput | CardCreateOrConnectWithoutUserInput[]
+    createMany?: CardCreateManyUserInputEnvelope
+    connect?: CardWhereUniqueInput | CardWhereUniqueInput[]
+  }
+
   export type CredentialCreateNestedManyWithoutUserInput = {
     create?: XOR<CredentialCreateWithoutUserInput, CredentialUncheckedCreateWithoutUserInput> | CredentialCreateWithoutUserInput[] | CredentialUncheckedCreateWithoutUserInput[]
     connectOrCreate?: CredentialCreateOrConnectWithoutUserInput | CredentialCreateOrConnectWithoutUserInput[]
@@ -5950,7 +5957,7 @@ export namespace Prisma {
     connect?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
   }
 
-  export type CardCreateNestedManyWithoutUserInput = {
+  export type CardUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<CardCreateWithoutUserInput, CardUncheckedCreateWithoutUserInput> | CardCreateWithoutUserInput[] | CardUncheckedCreateWithoutUserInput[]
     connectOrCreate?: CardCreateOrConnectWithoutUserInput | CardCreateOrConnectWithoutUserInput[]
     createMany?: CardCreateManyUserInputEnvelope
@@ -5971,15 +5978,22 @@ export namespace Prisma {
     connect?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
   }
 
-  export type CardUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<CardCreateWithoutUserInput, CardUncheckedCreateWithoutUserInput> | CardCreateWithoutUserInput[] | CardUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: CardCreateOrConnectWithoutUserInput | CardCreateOrConnectWithoutUserInput[]
-    createMany?: CardCreateManyUserInputEnvelope
-    connect?: CardWhereUniqueInput | CardWhereUniqueInput[]
-  }
-
   export type StringFieldUpdateOperationsInput = {
     set?: string
+  }
+
+  export type CardUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CardCreateWithoutUserInput, CardUncheckedCreateWithoutUserInput> | CardCreateWithoutUserInput[] | CardUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CardCreateOrConnectWithoutUserInput | CardCreateOrConnectWithoutUserInput[]
+    upsert?: CardUpsertWithWhereUniqueWithoutUserInput | CardUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CardCreateManyUserInputEnvelope
+    set?: CardWhereUniqueInput | CardWhereUniqueInput[]
+    disconnect?: CardWhereUniqueInput | CardWhereUniqueInput[]
+    delete?: CardWhereUniqueInput | CardWhereUniqueInput[]
+    connect?: CardWhereUniqueInput | CardWhereUniqueInput[]
+    update?: CardUpdateWithWhereUniqueWithoutUserInput | CardUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CardUpdateManyWithWhereWithoutUserInput | CardUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CardScalarWhereInput | CardScalarWhereInput[]
   }
 
   export type CredentialUpdateManyWithoutUserNestedInput = {
@@ -6010,7 +6024,15 @@ export namespace Prisma {
     deleteMany?: NoteScalarWhereInput | NoteScalarWhereInput[]
   }
 
-  export type CardUpdateManyWithoutUserNestedInput = {
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type CardUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<CardCreateWithoutUserInput, CardUncheckedCreateWithoutUserInput> | CardCreateWithoutUserInput[] | CardUncheckedCreateWithoutUserInput[]
     connectOrCreate?: CardCreateOrConnectWithoutUserInput | CardCreateOrConnectWithoutUserInput[]
     upsert?: CardUpsertWithWhereUniqueWithoutUserInput | CardUpsertWithWhereUniqueWithoutUserInput[]
@@ -6022,14 +6044,6 @@ export namespace Prisma {
     update?: CardUpdateWithWhereUniqueWithoutUserInput | CardUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: CardUpdateManyWithWhereWithoutUserInput | CardUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: CardScalarWhereInput | CardScalarWhereInput[]
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type CredentialUncheckedUpdateManyWithoutUserNestedInput = {
@@ -6058,20 +6072,6 @@ export namespace Prisma {
     update?: NoteUpdateWithWhereUniqueWithoutUserInput | NoteUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: NoteUpdateManyWithWhereWithoutUserInput | NoteUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: NoteScalarWhereInput | NoteScalarWhereInput[]
-  }
-
-  export type CardUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<CardCreateWithoutUserInput, CardUncheckedCreateWithoutUserInput> | CardCreateWithoutUserInput[] | CardUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: CardCreateOrConnectWithoutUserInput | CardCreateOrConnectWithoutUserInput[]
-    upsert?: CardUpsertWithWhereUniqueWithoutUserInput | CardUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: CardCreateManyUserInputEnvelope
-    set?: CardWhereUniqueInput | CardWhereUniqueInput[]
-    disconnect?: CardWhereUniqueInput | CardWhereUniqueInput[]
-    delete?: CardWhereUniqueInput | CardWhereUniqueInput[]
-    connect?: CardWhereUniqueInput | CardWhereUniqueInput[]
-    update?: CardUpdateWithWhereUniqueWithoutUserInput | CardUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: CardUpdateManyWithWhereWithoutUserInput | CardUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: CardScalarWhereInput | CardScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutCredentialsInput = {
@@ -6202,6 +6202,37 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type CardCreateWithoutUserInput = {
+    title: string
+    cardNumber: string
+    cardHolder: string
+    securityCode: string
+    expiration: string
+    isVirtual: boolean
+    type: string
+  }
+
+  export type CardUncheckedCreateWithoutUserInput = {
+    id?: number
+    title: string
+    cardNumber: string
+    cardHolder: string
+    securityCode: string
+    expiration: string
+    isVirtual: boolean
+    type: string
+  }
+
+  export type CardCreateOrConnectWithoutUserInput = {
+    where: CardWhereUniqueInput
+    create: XOR<CardCreateWithoutUserInput, CardUncheckedCreateWithoutUserInput>
+  }
+
+  export type CardCreateManyUserInputEnvelope = {
+    data: CardCreateManyUserInput | CardCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type CredentialCreateWithoutUserInput = {
     title: string
     url: string
@@ -6248,35 +6279,35 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type CardCreateWithoutUserInput = {
-    title: string
-    cardNumber: string
-    cardHolder: string
-    securityCode: string
-    expiration: string
-    isVirtual: boolean
-    type: string
-  }
-
-  export type CardUncheckedCreateWithoutUserInput = {
-    id?: number
-    title: string
-    cardNumber: string
-    cardHolder: string
-    securityCode: string
-    expiration: string
-    isVirtual: boolean
-    type: string
-  }
-
-  export type CardCreateOrConnectWithoutUserInput = {
+  export type CardUpsertWithWhereUniqueWithoutUserInput = {
     where: CardWhereUniqueInput
+    update: XOR<CardUpdateWithoutUserInput, CardUncheckedUpdateWithoutUserInput>
     create: XOR<CardCreateWithoutUserInput, CardUncheckedCreateWithoutUserInput>
   }
 
-  export type CardCreateManyUserInputEnvelope = {
-    data: CardCreateManyUserInput | CardCreateManyUserInput[]
-    skipDuplicates?: boolean
+  export type CardUpdateWithWhereUniqueWithoutUserInput = {
+    where: CardWhereUniqueInput
+    data: XOR<CardUpdateWithoutUserInput, CardUncheckedUpdateWithoutUserInput>
+  }
+
+  export type CardUpdateManyWithWhereWithoutUserInput = {
+    where: CardScalarWhereInput
+    data: XOR<CardUpdateManyMutationInput, CardUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type CardScalarWhereInput = {
+    AND?: CardScalarWhereInput | CardScalarWhereInput[]
+    OR?: CardScalarWhereInput[]
+    NOT?: CardScalarWhereInput | CardScalarWhereInput[]
+    id?: IntFilter<"Card"> | number
+    title?: StringFilter<"Card"> | string
+    cardNumber?: StringFilter<"Card"> | string
+    cardHolder?: StringFilter<"Card"> | string
+    securityCode?: StringFilter<"Card"> | string
+    expiration?: StringFilter<"Card"> | string
+    isVirtual?: BoolFilter<"Card"> | boolean
+    type?: StringFilter<"Card"> | string
+    userId?: IntFilter<"Card"> | number
   }
 
   export type CredentialUpsertWithWhereUniqueWithoutUserInput = {
@@ -6333,50 +6364,19 @@ export namespace Prisma {
     userId?: IntFilter<"Note"> | number
   }
 
-  export type CardUpsertWithWhereUniqueWithoutUserInput = {
-    where: CardWhereUniqueInput
-    update: XOR<CardUpdateWithoutUserInput, CardUncheckedUpdateWithoutUserInput>
-    create: XOR<CardCreateWithoutUserInput, CardUncheckedCreateWithoutUserInput>
-  }
-
-  export type CardUpdateWithWhereUniqueWithoutUserInput = {
-    where: CardWhereUniqueInput
-    data: XOR<CardUpdateWithoutUserInput, CardUncheckedUpdateWithoutUserInput>
-  }
-
-  export type CardUpdateManyWithWhereWithoutUserInput = {
-    where: CardScalarWhereInput
-    data: XOR<CardUpdateManyMutationInput, CardUncheckedUpdateManyWithoutUserInput>
-  }
-
-  export type CardScalarWhereInput = {
-    AND?: CardScalarWhereInput | CardScalarWhereInput[]
-    OR?: CardScalarWhereInput[]
-    NOT?: CardScalarWhereInput | CardScalarWhereInput[]
-    id?: IntFilter<"Card"> | number
-    title?: StringFilter<"Card"> | string
-    cardNumber?: StringFilter<"Card"> | string
-    cardHolder?: StringFilter<"Card"> | string
-    securityCode?: StringFilter<"Card"> | string
-    expiration?: StringFilter<"Card"> | string
-    isVirtual?: BoolFilter<"Card"> | boolean
-    type?: StringFilter<"Card"> | string
-    userId?: IntFilter<"Card"> | number
-  }
-
   export type UserCreateWithoutCredentialsInput = {
     email: string
     password: string
-    notes?: NoteCreateNestedManyWithoutUserInput
     cards?: CardCreateNestedManyWithoutUserInput
+    notes?: NoteCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCredentialsInput = {
     id?: number
     email: string
     password: string
-    notes?: NoteUncheckedCreateNestedManyWithoutUserInput
     cards?: CardUncheckedCreateNestedManyWithoutUserInput
+    notes?: NoteUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCredentialsInput = {
@@ -6398,31 +6398,31 @@ export namespace Prisma {
   export type UserUpdateWithoutCredentialsInput = {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    notes?: NoteUpdateManyWithoutUserNestedInput
     cards?: CardUpdateManyWithoutUserNestedInput
+    notes?: NoteUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCredentialsInput = {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    notes?: NoteUncheckedUpdateManyWithoutUserNestedInput
     cards?: CardUncheckedUpdateManyWithoutUserNestedInput
+    notes?: NoteUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutNotesInput = {
     email: string
     password: string
-    credentials?: CredentialCreateNestedManyWithoutUserInput
     cards?: CardCreateNestedManyWithoutUserInput
+    credentials?: CredentialCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutNotesInput = {
     id?: number
     email: string
     password: string
-    credentials?: CredentialUncheckedCreateNestedManyWithoutUserInput
     cards?: CardUncheckedCreateNestedManyWithoutUserInput
+    credentials?: CredentialUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutNotesInput = {
@@ -6444,16 +6444,16 @@ export namespace Prisma {
   export type UserUpdateWithoutNotesInput = {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    credentials?: CredentialUpdateManyWithoutUserNestedInput
     cards?: CardUpdateManyWithoutUserNestedInput
+    credentials?: CredentialUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotesInput = {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    credentials?: CredentialUncheckedUpdateManyWithoutUserNestedInput
     cards?: CardUncheckedUpdateManyWithoutUserNestedInput
+    credentials?: CredentialUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCardsInput = {
@@ -6502,6 +6502,17 @@ export namespace Prisma {
     notes?: NoteUncheckedUpdateManyWithoutUserNestedInput
   }
 
+  export type CardCreateManyUserInput = {
+    id?: number
+    title: string
+    cardNumber: string
+    cardHolder: string
+    securityCode: string
+    expiration: string
+    isVirtual: boolean
+    type: string
+  }
+
   export type CredentialCreateManyUserInput = {
     id?: number
     title: string
@@ -6516,15 +6527,36 @@ export namespace Prisma {
     content: string
   }
 
-  export type CardCreateManyUserInput = {
-    id?: number
-    title: string
-    cardNumber: string
-    cardHolder: string
-    securityCode: string
-    expiration: string
-    isVirtual: boolean
-    type: string
+  export type CardUpdateWithoutUserInput = {
+    title?: StringFieldUpdateOperationsInput | string
+    cardNumber?: StringFieldUpdateOperationsInput | string
+    cardHolder?: StringFieldUpdateOperationsInput | string
+    securityCode?: StringFieldUpdateOperationsInput | string
+    expiration?: StringFieldUpdateOperationsInput | string
+    isVirtual?: BoolFieldUpdateOperationsInput | boolean
+    type?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type CardUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    cardNumber?: StringFieldUpdateOperationsInput | string
+    cardHolder?: StringFieldUpdateOperationsInput | string
+    securityCode?: StringFieldUpdateOperationsInput | string
+    expiration?: StringFieldUpdateOperationsInput | string
+    isVirtual?: BoolFieldUpdateOperationsInput | boolean
+    type?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type CardUncheckedUpdateManyWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    cardNumber?: StringFieldUpdateOperationsInput | string
+    cardHolder?: StringFieldUpdateOperationsInput | string
+    securityCode?: StringFieldUpdateOperationsInput | string
+    expiration?: StringFieldUpdateOperationsInput | string
+    isVirtual?: BoolFieldUpdateOperationsInput | boolean
+    type?: StringFieldUpdateOperationsInput | string
   }
 
   export type CredentialUpdateWithoutUserInput = {
@@ -6565,38 +6597,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type CardUpdateWithoutUserInput = {
-    title?: StringFieldUpdateOperationsInput | string
-    cardNumber?: StringFieldUpdateOperationsInput | string
-    cardHolder?: StringFieldUpdateOperationsInput | string
-    securityCode?: StringFieldUpdateOperationsInput | string
-    expiration?: StringFieldUpdateOperationsInput | string
-    isVirtual?: BoolFieldUpdateOperationsInput | boolean
-    type?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type CardUncheckedUpdateWithoutUserInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    title?: StringFieldUpdateOperationsInput | string
-    cardNumber?: StringFieldUpdateOperationsInput | string
-    cardHolder?: StringFieldUpdateOperationsInput | string
-    securityCode?: StringFieldUpdateOperationsInput | string
-    expiration?: StringFieldUpdateOperationsInput | string
-    isVirtual?: BoolFieldUpdateOperationsInput | boolean
-    type?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type CardUncheckedUpdateManyWithoutUserInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    title?: StringFieldUpdateOperationsInput | string
-    cardNumber?: StringFieldUpdateOperationsInput | string
-    cardHolder?: StringFieldUpdateOperationsInput | string
-    securityCode?: StringFieldUpdateOperationsInput | string
-    expiration?: StringFieldUpdateOperationsInput | string
-    isVirtual?: BoolFieldUpdateOperationsInput | boolean
-    type?: StringFieldUpdateOperationsInput | string
   }
 
 
