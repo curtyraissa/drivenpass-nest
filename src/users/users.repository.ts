@@ -1,3 +1,5 @@
+// users.repository.ts
+
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -9,11 +11,8 @@ export class UserRepository {
 
   async createUser(createUserDto: CreateUserDto) {
     const { email, password } = createUserDto;
-
-    // Hash 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Criar o usuario
     const newUser = await this.prisma.user.create({
       data: {
         email,
@@ -24,7 +23,20 @@ export class UserRepository {
     return newUser;
   }
 
+  async createSession(userId: number, token: string) {
+    return this.prisma.session.create({
+      data: {
+        userId,
+        token,
+      },
+    });
+  }
+
   async findUserByEmail(email: string) {
     return this.prisma.user.findUnique({ where: { email } });
+  }
+
+  async findSessionByToken(token: string) {
+    return this.prisma.session.findFirst({ where: { token } });
   }
 }
