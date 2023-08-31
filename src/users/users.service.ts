@@ -1,60 +1,68 @@
-import { Injectable, ConflictException, HttpException, UnauthorizedException } from '@nestjs/common';
-import { UserRepository } from './users.repository';
-import { CreateUserDto } from './dto/create-user.dto';
+import { Injectable, ConflictException, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
+import * as jwt from 'jsonwebtoken';
+import { PrismaService } from '../prisma/prisma.service';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private readonly userRepository: UserRepository,
-    private readonly jwtService: JwtService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<any> {
+  private isStrongPassword(password: string) {
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z\d]).{10,}$/;
+    return passwordRegex.test(password);
+  }
+
+  async createUser(createUserDto: CreateUserDto) {
     const { email, password } = createUserDto;
 
-    const existingUser = await this.userRepository.findUserByEmail(email);
+    const existingUser = await this.findUserByEmail(email);
     if (existingUser) {
-      throw new ConflictException('Email already exists');
+      throw new ConflictException('Email already in use');
+    }
+
+    if (!this.isStrongPassword(password)) {
+      throw new BadRequestException('Password must meet security requirements');
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    return this.userRepository.createUser({
-      email,
-      password: hashedPassword,
+    return this.prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+      },
     });
   }
 
-  async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.userRepository.findUserByEmail(email);
-    if (user && await bcrypt.compare(password, user.password)) {
-      return user;
-    }
-    return null;
+  async createSession(token: string, userId: number) {
+    return this.prisma.session.create({
+      data: {
+        token,
+        userId,
+      },
+    });
   }
 
-  async generateJwtToken(user: any): Promise<string> {
-    const payload = { sub: user.id };
-    return this.jwtService.sign(payload);
+  async findUserByEmail(email: string) {
+    return this.prisma.user.findFirst({
+      where: {
+        email,
+      },
+    });
   }
 
-  async loginUser(email: string, password: string): Promise<{ accessToken: string }> {
-    const user = await this.userRepository.findUserByEmail(email);
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
-
+  async login(email: string, password: string) {
+    const user = await this.findUserByEmail(email);
     const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) {
+
+    if (!user || !passwordMatch) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const token = this.jwtService.sign({ userId: user.id }, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    const session = await this.userRepository.createSession(user.id, token);
-
+    const session = await this.createSession(token, user.id);
     return {
       accessToken: session.token,
     };
