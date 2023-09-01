@@ -1,26 +1,69 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, ConflictException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { User, Card } from '@prisma/client';
 import { CreateCardDto } from './dto/create-card.dto';
-import { UpdateCardDto } from './dto/update-card.dto';
 
 @Injectable()
 export class CardsService {
-  create(createCardDto: CreateCardDto) {
-    return 'This action adds a new card';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(user: User, createCardDto: CreateCardDto): Promise<Card> {
+    const existingCard = await this.prisma.card.findFirst({
+      where: {
+        title: createCardDto.title,
+        userId: user.id,
+      },
+    });
+
+    if (existingCard) {
+      throw new ConflictException(`You already have a card with the title '${createCardDto.title}'!`);
+    }
+
+    return this.prisma.card.create({
+      data: {
+        ...createCardDto,
+        userId: user.id,
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all cards`;
+  async findAll(user: User): Promise<Card[]> {
+    return this.prisma.card.findMany({
+      where: {
+        userId: user.id,
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} card`;
+  async findOne(id: number, user: User): Promise<Card> {
+    const card = await this.prisma.card.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!card || card.userId !== user.id) {
+      throw new NotFoundException('Card not found or does not belong to you!');
+    }
+
+    return card;
   }
 
-  update(id: number, updateCardDto: UpdateCardDto) {
-    return `This action updates a #${id} card`;
-  }
+  async remove(id: number, user: User): Promise<void> {
+    const card = await this.prisma.card.findUnique({
+      where: {
+        id,
+      },
+    });
 
-  remove(id: number) {
-    return `This action removes a #${id} card`;
+    if (!card || card.userId !== user.id) {
+      throw new NotFoundException('Card not found or does not belong to you!');
+    }
+
+    await this.prisma.card.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
