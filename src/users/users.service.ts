@@ -66,5 +66,14 @@ export class UsersService {
     return {
       accessToken: session.token,
     };
+    
+  }
+
+  async findUserById(id: number) {
+    return this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
   }
 }
