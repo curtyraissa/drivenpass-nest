@@ -7,7 +7,9 @@ import { CreateCardDto } from './dto/create-card.dto';
 export class CardsService {
   constructor(private readonly prisma: PrismaService) {}
 
+  // Cria um novo cartão para o usuário
   async create(user: User, createCardDto: CreateCardDto): Promise<Card> {
+    // Verifica se já existe um cartão com o mesmo título para o mesmo usuário
     const existingCard = await this.prisma.card.findFirst({
       where: {
         title: createCardDto.title,
@@ -19,6 +21,7 @@ export class CardsService {
       throw new ConflictException(`You already have a card with the title '${createCardDto.title}'!`);
     }
 
+    // Cria o novo cartão no banco de dados
     return this.prisma.card.create({
       data: {
         ...createCardDto,
@@ -27,6 +30,7 @@ export class CardsService {
     });
   }
 
+  // Lista todos os cartões do usuário
   async findAll(user: User): Promise<Card[]> {
     return this.prisma.card.findMany({
       where: {
@@ -35,6 +39,7 @@ export class CardsService {
     });
   }
 
+  // Busca um cartão específico por ID pertencente ao usuário
   async findOne(id: number, user: User): Promise<Card> {
     const card = await this.prisma.card.findUnique({
       where: {
@@ -49,6 +54,7 @@ export class CardsService {
     return card;
   }
 
+  // Remove um cartão por ID após verificar se ele pertence ao usuário
   async remove(id: number, user: User): Promise<void> {
     const card = await this.prisma.card.findUnique({
       where: {
@@ -60,6 +66,7 @@ export class CardsService {
       throw new NotFoundException('Card not found or does not belong to you!');
     }
 
+    // Deleta o cartão do banco de dados
     await this.prisma.card.delete({
       where: {
         id,

@@ -7,6 +7,7 @@ import { User, Note } from '@prisma/client';
 export class NotesService {
   constructor(private readonly prisma: PrismaService) {}
 
+  // Cria uma nova nota associada a um usuário
   async create(user: User, createNoteDto: CreateNoteDto): Promise<Note> {
     return this.prisma.note.create({
       data: {
@@ -17,7 +18,9 @@ export class NotesService {
     });
   }
 
+  // Atualiza uma nota existente, verificando se pertence ao usuário autenticado
   async update(id: number, user: User, updateNoteDto: CreateNoteDto): Promise<Note> {
+    // Verifica se a nota existe e se pertence ao usuário autenticado
     const existingNote = await this.prisma.note.findUnique({
       where: {
         id,
@@ -28,6 +31,7 @@ export class NotesService {
       throw new NotFoundException('Note not found or does not belong to you!');
     }
 
+    // Atualiza a nota com os novos dados fornecidos
     return this.prisma.note.update({
       where: {
         id,
@@ -39,6 +43,7 @@ export class NotesService {
     });
   }
 
+  // Lista todas as notas de um usuário
   async findAll(user: User): Promise<Note[]> {
     return this.prisma.note.findMany({
       where: {
@@ -47,6 +52,7 @@ export class NotesService {
     });
   }
 
+  // Busca uma nota específica por ID, verificando se pertence ao usuário autenticado
   async findOne(id: number, user: User): Promise<Note> {
     const note = await this.prisma.note.findUnique({
       where: {
@@ -61,6 +67,7 @@ export class NotesService {
     return note;
   }
 
+  // Remove uma nota por ID, verificando se pertence ao usuário autenticado
   async remove(id: number, user: User): Promise<void> {
     const note = await this.prisma.note.findUnique({
       where: {
@@ -72,6 +79,7 @@ export class NotesService {
       throw new NotFoundException('Note not found or does not belong to you!');
     }
 
+    // Deleta a nota do banco de dados
     await this.prisma.note.delete({
       where: {
         id,
@@ -79,4 +87,3 @@ export class NotesService {
     });
   }
 }
-
