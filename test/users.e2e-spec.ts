@@ -4,7 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { faker } from '@faker-js/faker';
 
-const generateStrongPassword = () => {
+export const generateStrongPassword = () => {
   const length = 12;
   const symbols = true;
   const numbers = true;
